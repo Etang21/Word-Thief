@@ -23,6 +23,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var nextLetterButton: UIButton!
     @IBOutlet weak var textFieldY: NSLayoutConstraint!
+    var boardCharButtons: [(char: Character, button: UIButton)] = []
     
     
     //MARK: Model
@@ -100,15 +101,6 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         updateScoreLabels()
     }
     
-    func updateLettersLabel() {
-        var letterString = ""
-        for char in lettersOnBoard {
-            letterString.append(char)
-            letterString += " "
-        }
-        lettersLabel.text = letterString
-    }
-    
     func updatePlayerWordLabels() {
         playerWordsLabel?.text = playerWords.reduce("", { $0 + "\($1)\n" })
         oppWordsLabel?.text = oppWords.reduce("", { $0 + "\($1)\n" })
@@ -131,14 +123,71 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    //MARK: Adding letters to board
+    func updateLettersLabel() {
+        var letterString = ""
+        for char in lettersOnBoard {
+            letterString.append(char)
+            letterString += " "
+        }
+        lettersLabel.text = letterString
+    }
+    
     @IBAction func addLetter(_ sender: Any) {
-        lettersOnBoard.append(getRandomLetter())
+        let nextLetter = getRandomLetter()
+        lettersOnBoard.append(nextLetter)
         updateLettersLabel()
+
+        addBoardCharButton(char: nextLetter)
+        updateBoardCharButtons()
+        
         if(compOpp != nil) {
             updateCompOpp()
             letCompOppSteal()
         }
+    }
+    
+    ///Updates the board char buttons to match the lettersOnBoard array.
+    func updateBoardCharButtons() {
+        let numButts = boardCharButtons.count
+        let totalButtonScaling = CGFloat(numButts) + CGFloat(UIConstants.spaceTileRatio)*CGFloat(numButts-1)
+        let maxButtWidth = lettersLabel.frame.width/totalButtonScaling
+        let maxButtHeight = lettersLabel.frame.height
+        
+        let buttDim = min(maxButtWidth, maxButtHeight)
+        let firstX = lettersLabel.frame.midX - (totalButtonScaling*buttDim)/2
+        let allY = lettersLabel.frame.midY - buttDim/2
+        for i in 0...numButts-1 {
+            let butt = boardCharButtons[i].button
+            butt.frame.size = CGSize(width: buttDim, height: buttDim)
+            let Xi = firstX + buttDim*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
+            butt.frame.origin = CGPoint(x: Xi, y: allY)
+            butt.titleLabel?.font = UIFont.boldSystemFont(ofSize: 0.618 * buttDim)
+            butt.layer.cornerRadius = 0.191 * buttDim
+        }
+    }
+    
+    func addBoardCharButton(char: Character) {
+        //TODO: Decide how the heck to first put the button in - and dimension code above is better
+        let maxButtWidth = (lettersLabel?.frame.width ?? view.bounds.size.width) / CGFloat((1+UIConstants.spaceTileRatio)*UIConstants.tilesPerRow)
+        let maxButtHeight = lettersLabel?.frame.height ?? maxButtWidth
+        let buttDim = min(maxButtWidth, maxButtHeight)
+        let buttX = (lettersLabel?.frame.maxX ?? 0) - buttDim
+        let buttY = (lettersLabel?.frame.minY ?? 0)
+        let buttonFrame = CGRect(origin: CGPoint(x: buttX, y: buttY), size: CGSize(width: buttDim, height: buttDim))
+        let newButt = makeCharButton(frame: buttonFrame, char: char)
+        
+        view.addSubview(newButt)
+        boardCharButtons.append((char: char, button: newButt))
+        print("Board char buttons is \(boardCharButtons)")
+    }
+    
+    func makeCharButton(frame: CGRect, char: Character) -> UIButton {
+        let butt = UIButton(frame: frame)
+        butt.setTitle(String(char), for: UIControlState())
+        butt.titleLabel?.font = UIFont.boldSystemFont(ofSize: 0.618 * frame.width)
+        butt.layer.cornerRadius = 0.191 * frame.width
+        butt.layer.backgroundColor = UIColor.orange.cgColor
+        return butt
     }
     
     //Returns a random capital letter, with respect to letter frequencies
@@ -277,5 +326,10 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         static let properScoreDict = [ 1:1, 2:1, 3:1, 4:1, 5:2, 6:3, 7:4, 8:5, 9:6, 10:7, 11:8, 12:9, 13:10, 14:11, 15:12] //wordLength:score
         static let chillScoreDict = [1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10, 11:11, 12:12, 13:13, 14:14, 15:15]
         static let timerDivision: Int = 200 //What fraction of the nextLetterTime the timer updates. Higher -> smoother timer performance.
+    }
+    
+    private struct UIConstants {
+        static let tilesPerRow = 3.0
+        static let spaceTileRatio = 0.1
     }
 }
