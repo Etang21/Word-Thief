@@ -2,6 +2,8 @@
 //  GameViewController.swift
 //  Anagrams
 //
+//  The main screen from which the game is played.
+//
 //  Created by Eric Tang on 8/25/17.
 //  Copyright © 2017 Eric Tang. All rights reserved.
 //
