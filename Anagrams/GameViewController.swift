@@ -15,7 +15,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     //MARK: Outlets
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var userInputLabel: UILabel!
-    @IBOutlet weak var lettersLabel: UILabel!
+    @IBOutlet weak var lettersLabel: UILabel! //This is actually just used for sizing. Could be a view.
     @IBOutlet weak var playerWordsLabel: UILabel!
     @IBOutlet weak var oppWordsLabel: UILabel!
     @IBOutlet weak var playerScoreLabel: UILabel!
@@ -23,7 +23,8 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var nextLetterButton: UIButton!
     @IBOutlet weak var textFieldY: NSLayoutConstraint!
-    var boardCharButtons: [(char: Character, button: UIButton)] = []
+    var boardTiles = [TileView]()
+    var entryTiles = [TileView]()
     
     
     //MARK: Model
@@ -96,7 +97,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     
     //MARK: UI Methods
     func updateUI() {
-        updateLettersLabel()
+        updateBoardTiles()
         updatePlayerWordLabels()
         updateScoreLabels()
     }
@@ -123,22 +124,21 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func updateLettersLabel() {
-        var letterString = ""
-        for char in lettersOnBoard {
-            letterString.append(char)
-            letterString += " "
+    func updateBoardTiles() {
+        for tile in boardTiles {
+            tile.removeFromSuperview()
         }
-        lettersLabel.text = letterString
+        boardTiles = []
+        for char in lettersOnBoard {
+            addBoardTile(char: char)
+        }
+        resizeBoardTiles()
     }
     
     @IBAction func addLetter(_ sender: Any) {
         let nextLetter = getRandomLetter()
         lettersOnBoard.append(nextLetter)
-        updateLettersLabel()
-
-        addBoardCharButton(char: nextLetter)
-        updateBoardCharButtons()
+        updateBoardTiles()
         
         if(compOpp != nil) {
             updateCompOpp()
@@ -146,48 +146,30 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    ///Updates the board char buttons to match the lettersOnBoard array.
-    func updateBoardCharButtons() {
-        let numButts = boardCharButtons.count
-        let totalButtonScaling = CGFloat(numButts) + CGFloat(UIConstants.spaceTileRatio)*CGFloat(numButts-1)
-        let maxButtWidth = lettersLabel.frame.width/totalButtonScaling
-        let maxButtHeight = lettersLabel.frame.height
+    ///Updates the board char buttons to fit onscreen and be centered
+    func resizeBoardTiles() {
+        let numTiles = boardTiles.count
+        let totalTileScale = CGFloat(numTiles) + CGFloat(UIConstants.spaceTileRatio)*CGFloat(numTiles-1)
+        let maxTileWidth = lettersLabel.frame.width/totalTileScale
+        let maxTileHeight = lettersLabel.frame.height
+        let tileSide = min(maxTileWidth, maxTileHeight)
         
-        let buttDim = min(maxButtWidth, maxButtHeight)
-        let firstX = lettersLabel.frame.midX - (totalButtonScaling*buttDim)/2
-        let allY = lettersLabel.frame.midY - buttDim/2
-        for i in 0...numButts-1 {
-            let butt = boardCharButtons[i].button
-            butt.frame.size = CGSize(width: buttDim, height: buttDim)
-            let Xi = firstX + buttDim*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
-            butt.frame.origin = CGPoint(x: Xi, y: allY)
-            butt.titleLabel?.font = UIFont.boldSystemFont(ofSize: 0.618 * buttDim)
-            butt.layer.cornerRadius = 0.191 * buttDim
+        let firstX = lettersLabel.frame.midX - (totalTileScale*tileSide)/2
+        let allY = lettersLabel.frame.midY - tileSide/2
+        for i in 0..<numTiles {
+            let tile = boardTiles[i]
+            tile.frame.size = CGSize(width: tileSide, height: tileSide)
+            let Xi = firstX + tileSide*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
+            tile.frame.origin = CGPoint(x: Xi, y: allY)
+            tile.charLabel.font = UIFont.boldSystemFont(ofSize: 0.618 * tileSide)
+            tile.charLabel.frame = tile.bounds
         }
     }
     
-    func addBoardCharButton(char: Character) {
-        //TODO: Decide how the heck to first put the button in - and dimension code above is better
-        let maxButtWidth = (lettersLabel?.frame.width ?? view.bounds.size.width) / CGFloat((1+UIConstants.spaceTileRatio)*UIConstants.tilesPerRow)
-        let maxButtHeight = lettersLabel?.frame.height ?? maxButtWidth
-        let buttDim = min(maxButtWidth, maxButtHeight)
-        let buttX = (lettersLabel?.frame.maxX ?? 0) - buttDim
-        let buttY = (lettersLabel?.frame.minY ?? 0)
-        let buttonFrame = CGRect(origin: CGPoint(x: buttX, y: buttY), size: CGSize(width: buttDim, height: buttDim))
-        let newButt = makeCharButton(frame: buttonFrame, char: char)
-        
-        view.addSubview(newButt)
-        boardCharButtons.append((char: char, button: newButt))
-        print("Board char buttons is \(boardCharButtons)")
-    }
-    
-    func makeCharButton(frame: CGRect, char: Character) -> UIButton {
-        let butt = UIButton(frame: frame)
-        butt.setTitle(String(char), for: UIControlState())
-        butt.titleLabel?.font = UIFont.boldSystemFont(ofSize: 0.618 * frame.width)
-        butt.layer.cornerRadius = 0.191 * frame.width
-        butt.layer.backgroundColor = UIColor.orange.cgColor
-        return butt
+    func addBoardTile(char: Character) {
+        let newTile = TileView(letter: char, pos: .board, sideLength: 0)
+        view.addSubview(newTile)
+        boardTiles.append(newTile)
     }
     
     //Returns a random capital letter, with respect to letter frequencies
@@ -208,7 +190,6 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         guard let str = str else { return }
         let isSteal = checkSteal(str, isPlayerSteal: isPlayerSteal)
         if(isSteal) {
-            updateUI()
             if(compOpp != nil) { updateCompOpp() }
             if(isPlayerSteal) {
                 //Yay! Fancy bells and whistles you stole it
@@ -220,6 +201,7 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         else if(isPlayerSteal) {
             //Player just tried and failed to steal. Do something sad.
         }
+        updateUI()
     }
     
     ///Updates computer opponent with new data
@@ -332,4 +314,11 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         static let tilesPerRow = 3.0
         static let spaceTileRatio = 0.1
     }
+}
+
+///A tile or char can either be on the board leters, the entry bar, or the root word getting stolen.
+enum LetterPosition {
+    case board
+    case entry
+    case root
 }
