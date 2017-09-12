@@ -11,19 +11,29 @@ import UIKit
 
 class TileRowView: UIView {
     
-    var tiles: [TileView]
-    
-    init(tiles: [TileView]) {
-        self.tiles = tiles
-        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0)) //Dud frame, will get resized
-    }
-    
+    var tiles = [TileView]()
+
     func resizeTiles() {
-        //Resizes and positions tiles within this row view
+        let numTiles = tiles.count
+        let totalTileScale = CGFloat(numTiles) + CGFloat(UIConstants.spaceTileRatio)*CGFloat(numTiles-1)
+        let maxTileWidth = bounds.width/totalTileScale
+        let maxTileHeight = bounds.height
+        let tileSide = min(maxTileWidth, maxTileHeight, UIConstants.maxTileSide)
         
+        let firstX = bounds.midX - (totalTileScale*tileSide)/2
+        let allY = bounds.midY - tileSide/2
+        for i in 0..<numTiles {
+            let tile = tiles[i]
+            tile.frame.size = CGSize(width: tileSide, height: tileSide)
+            let Xi = firstX + tileSide*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
+            tile.frame.origin = CGPoint(x: Xi, y: allY)
+            tile.charLabel.font = UIFont.boldSystemFont(ofSize: 0.618 * tileSide)
+            tile.charLabel.frame = tile.bounds
+        }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("Use init(tiles:)")
+    private struct UIConstants {
+        static let spaceTileRatio = 0.15
+        static let maxTileSide = CGFloat(50.0)
     }
 }

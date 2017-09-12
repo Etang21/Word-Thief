@@ -22,6 +22,7 @@
 		45D9FB4E1F670E6B0099B257 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FB4D1F670E6B0099B257 /* tile.png */; };
 		45D9FB501F670E8D0099B257 /* tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FB4F1F670E8D0099B257 /* tile@2x.png */; };
 		45D9FB521F671C810099B257 /* TileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FB511F671C810099B257 /* TileRowView.swift */; };
+		45E35EE81F684457008A3CE5 /* WordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E35EE71F684457008A3CE5 /* WordsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		45D9FB4D1F670E6B0099B257 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
 		45D9FB4F1F670E8D0099B257 /* tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tile@2x.png"; sourceTree = "<group>"; };
 		45D9FB511F671C810099B257 /* TileRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileRowView.swift; sourceTree = "<group>"; };
+		45E35EE71F684457008A3CE5 /* WordsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 			children = (
 				45D9FB4A1F670CB30099B257 /* TileView.swift */,
 				45D9FB511F671C810099B257 /* TileRowView.swift */,
+				45E35EE71F684457008A3CE5 /* WordsView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -331,6 +334,7 @@
 				458525171F55F33800886EE5 /* DifficultyViewController.swift in Sources */,
 				45840AE31F50A8F5008F6264 /* GameViewController.swift in Sources */,
 				45840AB51F509FA8008F6264 /* AppDelegate.swift in Sources */,
+				45E35EE81F684457008A3CE5 /* WordsView.swift in Sources */,
 				45D9FB521F671C810099B257 /* TileRowView.swift in Sources */,
 				45D9FB4B1F670CB30099B257 /* TileView.swift in Sources */,
 				45714D8A1F54940C0008B169 /* ComputerOpponent.swift in Sources */,

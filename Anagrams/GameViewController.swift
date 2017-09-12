@@ -13,17 +13,15 @@ import UIKit
 class GameViewController: UIViewController, UITextFieldDelegate {
     
     //MARK: Outlets
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var userInputLabel: UILabel!
-    @IBOutlet weak var lettersLabel: UILabel! //This is actually just used for sizing. Could be a view.
-    @IBOutlet weak var playerWordsLabel: UILabel!
+    @IBOutlet weak var boardTilesView: TileRowView!
+    @IBOutlet weak var playerWordsView: WordsView!
     @IBOutlet weak var oppWordsLabel: UILabel!
     @IBOutlet weak var playerScoreLabel: UILabel!
     @IBOutlet weak var oppScoreLabel: UILabel!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var nextLetterButton: UIButton!
-    @IBOutlet weak var textFieldY: NSLayoutConstraint!
-    var boardTiles = [TileView]()
+    @IBOutlet weak var entryView: TileRowView!
+    @IBOutlet weak var entryFieldY: NSLayoutConstraint!
     var entryTiles = [TileView]()
     
     
@@ -43,27 +41,15 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     //MARK: Setup Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureTextField()
+        configureEntryView()
         configureTimer()
         configureStartingWords()
         updateUI()
+        testPlayerWordsView()
     }
     
-    func configureTextField() {
-        self.textField?.delegate = self
-        textFieldY.constant = ((lettersLabel?.frame.height ?? 0) + (nextLetterButton?.frame.height ?? 0))/2
-        textField.autocapitalizationType = .allCharacters
-        textField.autocorrectionType = .no
-        textField.spellCheckingType = .no
-        textField.keyboardType = .alphabet
-        textField.keyboardAppearance = .default
-        textField.returnKeyType = .go
-        textField.clearsOnBeginEditing = true
-        textField.clearsOnInsertion = true
-        //Moves textfield when keyboard shows and hides:
-        //NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notif:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        //NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide(notif:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
+    func configureEntryView() {
+        entryFieldY.constant = ((boardTilesView?.frame.height ?? 0) + (boardTilesView?.frame.height ?? 0))/2
     }
     
     func configureTimer() {
@@ -78,21 +64,20 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     }
     
     func configureStartingWords() {
-        oppWords = ["JOKE", "YOUR", "NEAT", "GRAPE", "BOMBARD", "COUNTRYSIDE"]
+        //oppWords = ["JOKE", "YOUR", "NEAT", "GRAPE", "COUNTRYSIDE"]
         updateModelScore()
         if(compOpp != nil) { updateCompOpp() }
     }
     
-    ///Will be used if we need to shift frame when keyboard appears. Not currently used.
-    func keyboardWillShow(notif: NSNotification) {
-        //FIXME: Make this better! Actually extract the keyboard height. Animate. Maybe change constraints instead of view? Make it overlay opponents' words?
-        let userInfo = notif.userInfo!
-        let keyboardFrame: CGRect = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        self.view.frame.origin.y = -(keyboardFrame.size.height)
-    }
-    
-    func keyboardWillHide(notif: NSNotification) {
-        self.view.frame.origin.y = 0
+    func testPlayerWordsView() {
+        let testStr = "KITTEN"
+        let trView = TileRowView()
+        for char in testStr.characters {
+            let tile = TileView(letter: char, pos: .root, sideLength: 0)
+            trView.tiles.append(tile)
+            trView.addSubview(tile)
+        }
+        addTileRowView(trView: trView, playerID: .player)
     }
     
     //MARK: UI Methods
@@ -103,13 +88,13 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     }
     
     func updatePlayerWordLabels() {
-        playerWordsLabel?.text = playerWords.reduce("", { $0 + "\($1)\n" })
         oppWordsLabel?.text = oppWords.reduce("", { $0 + "\($1)\n" })
     }
     
     func updateScoreLabels() {
         playerScoreLabel.text = "\(playerScore)"
         oppScoreLabel.text = "\(oppScore)"
+        playerScoreLabel.bringSubview(toFront: view)
     }
     
     func incrementTime(timer: Timer) {
@@ -124,18 +109,10 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    func updateBoardTiles() {
-        for tile in boardTiles {
-            tile.removeFromSuperview()
-        }
-        boardTiles = []
-        for char in lettersOnBoard {
-            addBoardTile(char: char)
-        }
-        resizeBoardTiles()
-    }
-    
     @IBAction func addLetter(_ sender: Any) {
+        
+        testPlayerWordsView()
+        
         let nextLetter = getRandomLetter()
         lettersOnBoard.append(nextLetter)
         updateBoardTiles()
@@ -146,30 +123,21 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    ///Updates the board char buttons to fit onscreen and be centered
-    func resizeBoardTiles() {
-        let numTiles = boardTiles.count
-        let totalTileScale = CGFloat(numTiles) + CGFloat(UIConstants.spaceTileRatio)*CGFloat(numTiles-1)
-        let maxTileWidth = lettersLabel.frame.width/totalTileScale
-        let maxTileHeight = lettersLabel.frame.height
-        let tileSide = min(maxTileWidth, maxTileHeight)
-        
-        let firstX = lettersLabel.frame.midX - (totalTileScale*tileSide)/2
-        let allY = lettersLabel.frame.midY - tileSide/2
-        for i in 0..<numTiles {
-            let tile = boardTiles[i]
-            tile.frame.size = CGSize(width: tileSide, height: tileSide)
-            let Xi = firstX + tileSide*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
-            tile.frame.origin = CGPoint(x: Xi, y: allY)
-            tile.charLabel.font = UIFont.boldSystemFont(ofSize: 0.618 * tileSide)
-            tile.charLabel.frame = tile.bounds
+    func updateBoardTiles() {
+        for tile in boardTilesView.tiles {
+            tile.removeFromSuperview()
         }
+        boardTilesView.tiles = []
+        for char in lettersOnBoard {
+            addBoardTile(char: char)
+        }
+        boardTilesView.resizeTiles()
     }
     
     func addBoardTile(char: Character) {
         let newTile = TileView(letter: char, pos: .board, sideLength: 0)
-        view.addSubview(newTile)
-        boardTiles.append(newTile)
+        boardTilesView.addSubview(newTile)
+        boardTilesView.tiles.append(newTile)
     }
     
     //Returns a random capital letter, with respect to letter frequencies
@@ -181,6 +149,29 @@ class GameViewController: UIViewController, UITextFieldDelegate {
             if freqSum > randIndex { return char }
         }
         return "?" //If something bad happened . . .
+    }
+    
+    private func removeTileRowView(trView: TileRowView, playerID: playerID) {
+        if(playerID == .player) {
+            guard let index = playerWordsView.words.index(of: trView) else { return }
+            playerWordsView.words.remove(at: index)
+            trView.removeFromSuperview()
+            playerWordsView.resizeWords()
+        }
+        else if(playerID == .opp) {
+            //TODO: Remove from opp words
+        }
+    }
+    
+    private func addTileRowView(trView: TileRowView, playerID: playerID) {
+        if(playerID == .player) {
+            playerWordsView.addSubview(trView)
+            playerWordsView.words.append(trView)
+            playerWordsView.resizeWords()
+        }
+        else if(playerID == .opp) {
+            //TODO: add to opp words
+        }
     }
     
     //MARK: Stealing Words
@@ -289,14 +280,6 @@ class GameViewController: UIViewController, UITextFieldDelegate {
             })
         }
     }
-    
-    //MARK: UITextFieldDelegate Methods
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        submitSteal(textField.text, isPlayerSteal: true)
-        textField.text = nil
-        return true
-    }
 
     //MARK: Constants
     private struct AlphabetConstants {
@@ -309,11 +292,6 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         static let chillScoreDict = [1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10, 11:11, 12:12, 13:13, 14:14, 15:15]
         static let timerDivision: Int = 200 //What fraction of the nextLetterTime the timer updates. Higher -> smoother timer performance.
     }
-    
-    private struct UIConstants {
-        static let tilesPerRow = 3.0
-        static let spaceTileRatio = 0.1
-    }
 }
 
 ///A tile or char can either be on the board leters, the entry bar, or the root word getting stolen.
@@ -321,4 +299,9 @@ enum LetterPosition {
     case board
     case entry
     case root
+}
+
+enum playerID {
+    case player
+    case opp
 }
