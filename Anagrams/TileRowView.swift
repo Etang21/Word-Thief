@@ -9,9 +9,26 @@
 
 import UIKit
 
+protocol TileRowViewDelegate {
+    func tileRowViewWasTapped(trView: TileRowView)
+}
+
 class TileRowView: UIView {
     
     var tiles = [TileView]()
+    var tapDelegate:TileRowViewDelegate?
+    
+    func addTile(tile: TileView) {
+        tiles.append(tile)
+        resizeTiles()
+        addSubview(tile)
+    }
+    
+    func removeTile(tile: TileView, removeFromSuperview: Bool = false, resizes: Bool = true) {
+        tiles = tiles.filter({ !($0.isEqual(tile)) })
+        if removeFromSuperview { tile.removeFromSuperview() }
+        resizeTiles()
+    }
 
     func resizeTiles() {
         let numTiles = tiles.count
@@ -24,12 +41,16 @@ class TileRowView: UIView {
         let allY = bounds.midY - tileSide/2
         for i in 0..<numTiles {
             let tile = tiles[i]
-            tile.frame.size = CGSize(width: tileSide, height: tileSide)
             let Xi = firstX + tileSide*CGFloat(Double(i)*(1+UIConstants.spaceTileRatio))
-            tile.frame.origin = CGPoint(x: Xi, y: allY)
-            tile.charLabel.font = UIFont.boldSystemFont(ofSize: 0.618 * tileSide)
-            tile.charLabel.frame = tile.bounds
+            let animTime = 0.40 + 0.10*Double(arc4random())/Double(UINT32_MAX)
+            UIView.animate(withDuration: animTime, delay: 0.00, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                tile.moveTo(newSize: CGSize(width: tileSide, height: tileSide), newOrigin: CGPoint(x: Xi, y: allY))
+            })
         }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        tapDelegate?.tileRowViewWasTapped(trView: self)
     }
     
     private struct UIConstants {

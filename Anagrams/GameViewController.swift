@@ -10,7 +10,7 @@
 
 import UIKit
 
-class GameViewController: UIViewController, UITextFieldDelegate {
+class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegate, TileRowViewDelegate {
     
     //MARK: Outlets
     @IBOutlet weak var boardTilesView: TileRowView!
@@ -22,7 +22,8 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var nextLetterButton: UIButton!
     @IBOutlet weak var entryView: TileRowView!
     @IBOutlet weak var entryFieldY: NSLayoutConstraint!
-    var entryTiles = [TileView]()
+    var inEntryMode: Bool = false
+    var rootTRView: TileRowView?
     
     
     //MARK: Model
@@ -41,11 +42,16 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     //MARK: Setup Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureBoardTilesView()
         configureEntryView()
         configureTimer()
         configureStartingWords()
         updateUI()
         testPlayerWordsView()
+    }
+    
+    func configureBoardTilesView() {
+        boardTilesView.tapDelegate = self
     }
     
     func configureEntryView() {
@@ -71,13 +77,30 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     
     func testPlayerWordsView() {
         let testStr = "KITTEN"
-        let trView = TileRowView()
-        for char in testStr.characters {
-            let tile = TileView(letter: char, pos: .root, sideLength: 0)
-            trView.tiles.append(tile)
-            trView.addSubview(tile)
+        let tiles = testStr.characters.map({ TileView(letter: $0, sideLength: 0) })
+        let _ = tiles.map({ $0.touchDelegate = self })
+        let trView = playerWordsView.addWordForTiles(tiles: tiles)
+        trView.tapDelegate = self
+        if(playerWordsView.words.count == 3) {
+            playerWordsView.remove(trView: playerWordsView.words[0])
         }
-        addTileRowView(trView: trView, playerID: .player)
+    }
+    
+    func testBoardTilesView() {
+        /*
+        if(boardTilesView?.tiles.count ?? 0 > 4) {
+            boardTilesView.removeTile(tile: boardTilesView.tiles[0], removeFromSuperview: true)
+        } */
+        guard let boardTiles = boardTilesView?.tiles, boardTiles.count == 5 else {
+            return
+        }
+        for tile in boardTiles {
+            boardTilesView.removeTile(tile: tile)
+            view.addSubview(tile)
+        }
+        let trView = playerWordsView.addWordForTiles(tiles: boardTiles)
+        playerWordsView.resizeWords()
+        trView.tapDelegate = self
     }
     
     //MARK: UI Methods
@@ -111,11 +134,12 @@ class GameViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func addLetter(_ sender: Any) {
         
-        testPlayerWordsView()
+        testBoardTilesView()
+        //testPlayerWordsView() //TODO: Remove this code, it just adds kittens
         
         let nextLetter = getRandomLetter()
         lettersOnBoard.append(nextLetter)
-        updateBoardTiles()
+        addBoardTileFor(char: nextLetter)
         
         if(compOpp != nil) {
             updateCompOpp()
@@ -123,21 +147,22 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    //TODO: Eventually you will wipe out this method!
     func updateBoardTiles() {
         for tile in boardTilesView.tiles {
             tile.removeFromSuperview()
         }
         boardTilesView.tiles = []
         for char in lettersOnBoard {
-            addBoardTile(char: char)
+            addBoardTileFor(char: char)
         }
         boardTilesView.resizeTiles()
     }
     
-    func addBoardTile(char: Character) {
-        let newTile = TileView(letter: char, pos: .board, sideLength: 0)
-        boardTilesView.addSubview(newTile)
-        boardTilesView.tiles.append(newTile)
+    func addBoardTileFor(char: Character) {
+        let newTile = TileView(letter: char, sideLength: 0)
+        newTile.touchDelegate = self
+        boardTilesView.addTile(tile: newTile)
     }
     
     //Returns a random capital letter, with respect to letter frequencies
@@ -172,6 +197,52 @@ class GameViewController: UIViewController, UITextFieldDelegate {
         else if(playerID == .opp) {
             //TODO: add to opp words
         }
+    }
+    
+    func tileRowViewWasTapped(trView: TileRowView) {
+        if !inEntryMode {
+            switchToEntryMode(trView: trView)
+        }
+        if inEntryMode && !trView.isEqual(rootTRView) && !trView.isEqual(boardTilesView) {
+            switchOutOfEntryMode(trView: trView)
+        }
+    }
+    
+    private func switchToEntryMode(trView: TileRowView) {
+        inEntryMode = true
+        rootTRView = trView
+        for subview in view.subviews + playerWordsView.subviews + [view] {
+            subview.backgroundColor = UIColor.lightGray
+        }
+        trView.backgroundColor = UIColor.green
+        boardTilesView.backgroundColor = UIColor.green
+        entryView.backgroundColor = UIColor.green
+    }
+    
+    private func switchOutOfEntryMode(trView: TileRowView) {
+        inEntryMode = false
+        rootTRView = nil
+        for subview in view.subviews + playerWordsView.subviews + [view] {
+            subview.backgroundColor = UIColor.white
+        }
+        entryView.backgroundColor = UIColor.gray
+    }
+    
+    func tileViewWasTapped(tileView: TileView) {
+        print("Recorded tap, in tileViewWasTapped")
+        guard inEntryMode else { return }
+        print("In tileViewWasTapped, not in entry mode")
+        if let root = rootTRView, root.tiles.contains(tileView) {
+            print("Tile detected in the root")
+            root.removeTile(tile: tileView)
+            entryView.addTile(tile: tileView)
+        }
+        else if boardTilesView.tiles.contains(tileView) {
+            print("Tile detected in boardtiles")
+            boardTilesView.removeTile(tile: tileView)
+            entryView.addTile(tile: tileView)
+        }
+        //If not in entry mode, ignore. Entry mode triggered by tapping rows, not tiles
     }
     
     //MARK: Stealing Words

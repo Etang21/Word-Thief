@@ -8,21 +8,23 @@
 
 import UIKit
 
+protocol TileViewDelegate {
+    func tileViewWasTapped(tileView: TileView)
+}
+
 class TileView: UIImageView {
     
     var letter: Character
-    var charPos: LetterPosition
-    var tilePos: LetterPosition
     var charLabel: UILabel!
+    var touchDelegate: TileViewDelegate?
     
-    init(letter: Character, pos: LetterPosition, sideLength: CGFloat) {
+    init(letter: Character, sideLength: CGFloat) {
         self.letter = letter
-        self.charPos = pos
-        self.tilePos = pos
         
         let image = UIImage(named: "tile")! //TODO: Have different images for their tiles and yours?
         super.init(image: image)
         self.frame = CGRect(x: 0, y: 0, width: sideLength, height: sideLength)
+        self.isUserInteractionEnabled = true
         
         //Add character to tile:
         charLabel = UILabel(frame: self.bounds)
@@ -34,8 +36,20 @@ class TileView: UIImageView {
         self.addSubview(charLabel)
     }
     
+    func moveTo(newSize: CGSize, newOrigin: CGPoint) {
+        frame.size = newSize
+        frame.origin = newOrigin
+        charLabel.font = UIFont.boldSystemFont(ofSize: 0.618 * newSize.width)
+        charLabel.frame = self.bounds
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        touchDelegate?.tileViewWasTapped(tileView: self)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
-        fatalError("Use init(letter: ,pos: )")
+        fatalError("Use init(letter: ,sideLength: )")
     }
     
 }
