@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4511E8D81F6D895300C9B97E /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8D51F6D895300C9B97E /* swoosh.wav */; };
+		4511E8D91F6D895300C9B97E /* failure-heavy.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8D61F6D895300C9B97E /* failure-heavy.wav */; };
+		4511E8DA1F6D895300C9B97E /* failure-light.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8D71F6D895300C9B97E /* failure-light.wav */; };
+		4511E8DE1F6D8DB100C9B97E /* tap.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8DD1F6D8DB100C9B97E /* tap.wav */; };
+		4511E8E01F6DA8AB00C9B97E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8DF1F6DA8AB00C9B97E /* Podfile */; };
 		456C43D01F6B02C900F7AF16 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C43CF1F6B02C900F7AF16 /* GameModel.swift */; };
 		45714D8A1F54940C0008B169 /* ComputerOpponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45714D891F54940C0008B169 /* ComputerOpponent.swift */; };
 		45714D8D1F54B3550008B169 /* ScrabbleDictionary.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45714D8C1F54B3550008B169 /* ScrabbleDictionary.txt */; };
@@ -48,6 +53,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4511E8D51F6D895300C9B97E /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
+		4511E8D61F6D895300C9B97E /* failure-heavy.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "failure-heavy.wav"; sourceTree = "<group>"; };
+		4511E8D71F6D895300C9B97E /* failure-light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "failure-light.wav"; sourceTree = "<group>"; };
+		4511E8DD1F6D8DB100C9B97E /* tap.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tap.wav; sourceTree = "<group>"; };
+		4511E8DF1F6DA8AB00C9B97E /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		456C43CF1F6B02C900F7AF16 /* GameModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		45714D891F54940C0008B169 /* ComputerOpponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComputerOpponent.swift; path = ../ComputerOpponent.swift; sourceTree = "<group>"; };
 		45714D8C1F54B3550008B169 /* ScrabbleDictionary.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ScrabbleDictionary.txt; sourceTree = "<group>"; };
@@ -156,6 +166,10 @@
 		458437531F6C90670040E7D4 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				4511E8DD1F6D8DB100C9B97E /* tap.wav */,
+				4511E8D51F6D895300C9B97E /* swoosh.wav */,
+				4511E8D61F6D895300C9B97E /* failure-heavy.wav */,
+				4511E8D71F6D895300C9B97E /* failure-light.wav */,
 				4584374E1F6C90320040E7D4 /* ding.mp3 */,
 				458437581F6C9DCC0040E7D4 /* win.mp3 */,
 			);
@@ -165,6 +179,7 @@
 		45D9FB461F670B7C0099B257 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4511E8DF1F6DA8AB00C9B97E /* Podfile */,
 				458437531F6C90670040E7D4 /* Sounds */,
 				45D9FB4C1F670E470099B257 /* Images */,
 				45840AB41F509FA8008F6264 /* AppDelegate.swift */,
@@ -323,12 +338,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4511E8D91F6D895300C9B97E /* failure-heavy.wav in Resources */,
 				45D9FB4E1F670E6B0099B257 /* tile.png in Resources */,
 				45714D8D1F54B3550008B169 /* ScrabbleDictionary.txt in Resources */,
 				4584374F1F6C90320040E7D4 /* ding.mp3 in Resources */,
+				4511E8DE1F6D8DB100C9B97E /* tap.wav in Resources */,
 				458437591F6C9DCC0040E7D4 /* win.mp3 in Resources */,
 				45D9FB501F670E8D0099B257 /* tile@2x.png in Resources */,
+				4511E8D81F6D895300C9B97E /* swoosh.wav in Resources */,
 				45840ABF1F509FA9008F6264 /* LaunchScreen.storyboard in Resources */,
+				4511E8E01F6DA8AB00C9B97E /* Podfile in Resources */,
+				4511E8DA1F6D895300C9B97E /* failure-light.wav in Resources */,
 				45840ABC1F509FA9008F6264 /* Assets.xcassets in Resources */,
 				45840ABA1F509FA9008F6264 /* Main.storyboard in Resources */,
 			);

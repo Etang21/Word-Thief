@@ -12,7 +12,7 @@ import Foundation
 import UIKit //Just for the text checker
 
 //Delegate protocol, must react when something is stolen.
-protocol GameModelDelegate {
+protocol GameModelDelegate: class {
     func didSteal(steal: String, root: String, playerID: PlayerID)
 }
 
@@ -22,7 +22,7 @@ class GameModel {
     var playerWords = [String]()
     var oppWords = [String]()
     
-    var delegate: GameModelDelegate?
+    weak var delegate: GameModelDelegate?
     
     var playerScore: Int {
         return playerWords.reduce(0, {$0 + (ModelSettings.chillScoreDict[$1.characters.count] ?? 12)})

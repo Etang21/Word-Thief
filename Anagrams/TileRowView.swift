@@ -9,14 +9,14 @@
 
 import UIKit
 
-protocol TileRowViewDelegate {
+protocol TileRowViewDelegate: class {
     func tileRowViewWasTapped(trView: TileRowView)
 }
 
 class TileRowView: UIView {
     
     var tiles = [TileView]()
-    var tapDelegate:TileRowViewDelegate?
+    weak var tapDelegate: TileRowViewDelegate?
     
     func addTile(tile: TileView) {
         if tiles.contains(tile) {

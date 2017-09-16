@@ -253,6 +253,7 @@
                     </view>
                     <connections>
                         <outlet property="boardTilesView" destination="ZtR-7R-VVn" id="URv-EB-UQx"/>
+                        <outlet property="entryButton" destination="AEX-HW-BsJ" id="D9w-mD-xVs"/>
                         <outlet property="entryFieldY" destination="eHD-wt-TIG" id="fYL-aR-Ky8"/>
                         <outlet property="entryView" destination="4Yd-6H-l77" id="wU6-p5-yjv"/>
                         <outlet property="nextLetterButton" destination="C8W-GC-nkh" id="Swe-Oy-xwc"/>

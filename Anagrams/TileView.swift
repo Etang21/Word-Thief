@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol TileViewDelegate {
+protocol TileViewDelegate: class {
     func tileViewWasTapped(tileView: TileView)
 }
 
@@ -16,7 +16,7 @@ class TileView: UIImageView {
     
     var letter: Character
     var charLabel: UILabel!
-    var touchDelegate: TileViewDelegate?
+    weak var touchDelegate: TileViewDelegate?
     
     init(letter: Character, sideLength: CGFloat) {
         self.letter = letter

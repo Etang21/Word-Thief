@@ -10,6 +10,10 @@
 import Foundation
 import UIKit
 
-let SoundTap = "ding.mp3"
+let SoundTap = "tap.wav"
 let SoundPlayerSteal = "win.mp3"
-let AudioEffectFiles = [SoundTap, SoundPlayerSteal]
+let SoundAddLetter = "swoosh.wav"
+let SoundOppSteal = "failure-heavy.wav"
+let SoundRejectedSteal = "failure-light.wav"
+
+let AudioEffectFiles = [SoundTap, SoundPlayerSteal, SoundAddLetter, SoundOppSteal, SoundRejectedSteal]

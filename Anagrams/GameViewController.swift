@@ -22,6 +22,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     @IBOutlet weak var nextLetterButton: UIButton!
     @IBOutlet weak var entryView: TileRowView!
     @IBOutlet weak var entryFieldY: NSLayoutConstraint!
+    @IBOutlet weak var entryButton: UIButton!
     
     //MARK: Model
     var gameState = GameModel()
@@ -61,7 +62,9 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     func configureTimer() {
         if(hasTimer) {
             let timerInterval = TimeInterval(nextLetterTime/Float(GameSettings.timerDivision))
-            timer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true, block: incrementTime(timer:))
+            timer = Timer.scheduledTimer(withTimeInterval: timerInterval, repeats: true, block: { [weak self] (timer: Timer) -> Void in
+                self?.incrementTime(timer: timer)
+            })
             timer.tolerance = 0.1*timerInterval
         }
         else {
@@ -158,15 +161,15 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     
     @IBAction func addLetter(_ sender: Any) {
         let nextLetter = getRandomLetter()
-        gameState.lettersOnBoard.append(nextLetter) //TODO: Add this back in later!
+        gameState.lettersOnBoard.append(nextLetter)
+        
+        audioPlayer.playEffect(name: SoundAddLetter)
         addBoardTileFor(char: nextLetter)
         
         if(compOpp != nil) {
             updateCompOpp()
             letCompOppSteal()
         }
-        
-        print(gameState.description)
     }
     
     func addBoardTileFor(char: Character) {
@@ -199,25 +202,38 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         inEntryMode = true
         rootTRView = trView
         originalRootTiles = trView.tiles
-        for subview in view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view] {
-            subview.backgroundColor = UIColor.lightGray
-        }
-        trView.backgroundColor = UIColor.green
-        boardTilesView.backgroundColor = UIColor.green
-        entryView.backgroundColor = UIColor.green
+        
+        let allViews = view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view]
+        let _ = allViews.map({
+            $0.backgroundColor = UIColor.gray
+        })
+        
+        let highlightViews: [UIView] = [trView, boardTilesView, entryView, entryButton]
+        let _  = highlightViews.map({
+            $0.backgroundColor = UIColor.green
+        })
+        
         playerScoreLabel.backgroundColor = UIColor.clear
         oppScoreLabel.backgroundColor = UIColor.clear
     }
     
     private func endEntryMode(wasSteal: Bool) {
-        if !wasSteal { resetEntryTiles() }
+        if !wasSteal {
+            audioPlayer.playEffect(name: SoundRejectedSteal)
+            resetEntryTiles()
+        }
         inEntryMode = false
         originalRootTiles = nil
         rootTRView = nil
-        for subview in view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view] {
-            subview.backgroundColor = UIColor.white
-        }
+        
+        let allViews = view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view]
+        let _ = allViews.map({
+            $0.backgroundColor = UIColor.white
+        })
+        
         entryView.backgroundColor = UIColor.gray
+        playerScoreLabel.backgroundColor = UIColor.clear
+        oppScoreLabel.backgroundColor = UIColor.clear
     }
     
     private func resetEntryTiles() {
@@ -257,12 +273,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         
         let stealString = String(entryView.tiles.map({ $0.letter }))
         let isSteal = gameState.submitSteal(stealString, isPlayerSteal: true) //Updates the entire model, will delegate to UI if successful steal
-        if !isSteal {
-            print("That was not a steal")
-            endEntryMode(wasSteal: false)
-            //You didn't steal it . . . have a sad noise.
-        }
-        print(gameState.description)
+        if !isSteal { endEntryMode(wasSteal: false) }
     }
     
     ///The model calls this method when a steal goes through
@@ -304,6 +315,8 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
                 }
             }
         }
+        
+        audioPlayer.playEffect(name: SoundOppSteal)
         updateTilesAndRootViewForSteal(tiles: stealTiles, rootView: rootView, playerID: .opp)
     }
     
@@ -312,6 +325,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         guard let rootView = rootTRView else { endEntryMode(wasSteal: false); return }
         let stolenTiles = entryView.tiles
         let _ = stolenTiles.map({ entryView.removeTile(tile: $0) })
+        
         audioPlayer.playEffect(name: SoundPlayerSteal)
         updateTilesAndRootViewForSteal(tiles: stolenTiles, rootView: rootView, playerID: .player)
         endEntryMode(wasSteal: true)
@@ -346,16 +360,17 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     }
     
     func printAllSteals() {
-        DispatchQueue.global(qos: .utility).async {
-            print(self.compOpp?.getAllSteals() ?? "CompOpp is nil")
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let allSteals = self?.compOpp?.getAllSteals() ?? ["CompOpp is nil"]
+            print(allSteals)
         }
     }
     
     func letCompOppSteal() {
-        DispatchQueue.global(qos: .utility).async {
-            guard let compSteal = self.compOpp?.getFirstSteal() else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + (self.compOpp?.stealDelay ?? 0), execute: {
-                self.gameState.submitSteal(compSteal, isPlayerSteal: false)
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let compSteal = self?.compOpp?.getFirstSteal() else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + (self?.compOpp?.stealDelay ?? 0), execute: {
+                self?.gameState.submitSteal(compSteal, isPlayerSteal: false)
             })
         }
     }

@@ -28,9 +28,7 @@ class AudioController {
     }
     
     func playEffect(name: String) {
-        print("Now in playEffect in AudioController")
         guard let player = audio[name] else { return }
-        print("Found the audio effect \(name) in audio dict")
         if player.isPlaying {
             player.currentTime = 0
         } else {
