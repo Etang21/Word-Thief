@@ -9,6 +9,7 @@
 //
 
 import UIKit
+import ChameleonFramework
 
 class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegate, GameModelDelegate {
     
@@ -48,6 +49,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         configureTimer()
         configureStartingWords()
         configureAudioPlayer()
+        configureColors()
         gameState.delegate = self
     }
     
@@ -57,6 +59,8 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     
     func configureEntryView() {
         entryFieldY.constant = ((boardTilesView?.frame.height ?? 0) + (boardTilesView?.frame.height ?? 0))/2
+        entryView.backgroundColor = DefaultEntryViewColor
+        entryButton.isHidden = true
     }
     
     func configureTimer() {
@@ -82,6 +86,14 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     func configureAudioPlayer() {
         audioPlayer.preloadAudioEffects()
         //Play some welcome noise or something maybe
+    }
+    
+    func configureColors() {
+        let allViews = view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view]
+        let _ = allViews.map({
+            $0.backgroundColor = DefaultBackgroundColor
+        })
+        //self.setStatusBarStyle(UIStatusBarStyleContrast)
     }
     
     ///Only used for adding the starting words of the game to oppPlayer
@@ -145,6 +157,8 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     func updateScoreLabels() {
         playerScoreLabel.text = "\(gameState.playerScore)"
         oppScoreLabel.text = "\(gameState.oppScore)"
+        playerScoreLabel.textColor = ContrastColorOf(DefaultBackgroundColor, returnFlat: true)
+        oppScoreLabel.textColor = ContrastColorOf(DefaultBackgroundColor, returnFlat: true)
     }
     
     func incrementTime(timer: Timer) {
@@ -205,14 +219,15 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         
         let allViews = view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view]
         let _ = allViews.map({
-            $0.backgroundColor = UIColor.gray
+            $0.backgroundColor = EntryBackgroundColor
         })
         
         let highlightViews: [UIView] = [trView, boardTilesView, entryView, entryButton]
         let _  = highlightViews.map({
-            $0.backgroundColor = UIColor.green
+            $0.backgroundColor = EntryViewsColor
         })
         
+        entryButton.isHidden = false
         playerScoreLabel.backgroundColor = UIColor.clear
         oppScoreLabel.backgroundColor = UIColor.clear
     }
@@ -228,10 +243,11 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         
         let allViews = view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view]
         let _ = allViews.map({
-            $0.backgroundColor = UIColor.white
+            $0.backgroundColor = DefaultBackgroundColor
         })
         
-        entryView.backgroundColor = UIColor.gray
+        entryButton.isHidden = true
+        entryView.backgroundColor = DefaultEntryViewColor
         playerScoreLabel.backgroundColor = UIColor.clear
         oppScoreLabel.backgroundColor = UIColor.clear
     }

@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import ChameleonFramework
 
 let SoundTap = "tap.wav"
 let SoundPlayerSteal = "win.mp3"
@@ -17,3 +18,10 @@ let SoundOppSteal = "failure-heavy.wav"
 let SoundRejectedSteal = "failure-light.wav"
 
 let AudioEffectFiles = [SoundTap, SoundPlayerSteal, SoundAddLetter, SoundOppSteal, SoundRejectedSteal]
+
+let DefaultBackgroundColor = FlatRed()
+let ColorArray = ColorSchemeOf(ColorScheme.analogous, color: DefaultBackgroundColor, isFlatScheme: true)
+
+let EntryViewsColor = ColorArray[0] 
+let EntryBackgroundColor = ColorArray[2]
+let DefaultEntryViewColor = ColorArray[4]

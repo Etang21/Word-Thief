@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import ChameleonFramework
 
 class OpeningViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        view.backgroundColor = GradientColor(.diagonal, frame: view.frame, colors: [DefaultBackgroundColor, FlatWhite()])
+        //self.setStatusBarStyle(UIStatusBarStyleContrast)
     }
 
     override func didReceiveMemoryWarning() {

@@ -11,7 +11,6 @@
 		4511E8D91F6D895300C9B97E /* failure-heavy.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8D61F6D895300C9B97E /* failure-heavy.wav */; };
 		4511E8DA1F6D895300C9B97E /* failure-light.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8D71F6D895300C9B97E /* failure-light.wav */; };
 		4511E8DE1F6D8DB100C9B97E /* tap.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8DD1F6D8DB100C9B97E /* tap.wav */; };
-		4511E8E01F6DA8AB00C9B97E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4511E8DF1F6DA8AB00C9B97E /* Podfile */; };
 		456C43D01F6B02C900F7AF16 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456C43CF1F6B02C900F7AF16 /* GameModel.swift */; };
 		45714D8A1F54940C0008B169 /* ComputerOpponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45714D891F54940C0008B169 /* ComputerOpponent.swift */; };
 		45714D8D1F54B3550008B169 /* ScrabbleDictionary.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45714D8C1F54B3550008B169 /* ScrabbleDictionary.txt */; };
@@ -33,6 +32,7 @@
 		45D9FB501F670E8D0099B257 /* tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FB4F1F670E8D0099B257 /* tile@2x.png */; };
 		45D9FB521F671C810099B257 /* TileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FB511F671C810099B257 /* TileRowView.swift */; };
 		45E35EE81F684457008A3CE5 /* WordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E35EE71F684457008A3CE5 /* WordsView.swift */; };
+		47425B2842AFEF6B8253126F /* Pods_Anagrams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F03ED10E99B05E3C6BBCDC /* Pods_Anagrams.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,11 +53,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4395E5B34D80D1B74295E77F /* Pods-Anagrams.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Anagrams.release.xcconfig"; path = "Pods/Target Support Files/Pods-Anagrams/Pods-Anagrams.release.xcconfig"; sourceTree = "<group>"; };
 		4511E8D51F6D895300C9B97E /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
 		4511E8D61F6D895300C9B97E /* failure-heavy.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "failure-heavy.wav"; sourceTree = "<group>"; };
 		4511E8D71F6D895300C9B97E /* failure-light.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "failure-light.wav"; sourceTree = "<group>"; };
 		4511E8DD1F6D8DB100C9B97E /* tap.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tap.wav; sourceTree = "<group>"; };
-		4511E8DF1F6DA8AB00C9B97E /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		456C43CF1F6B02C900F7AF16 /* GameModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
 		45714D891F54940C0008B169 /* ComputerOpponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComputerOpponent.swift; path = ../ComputerOpponent.swift; sourceTree = "<group>"; };
 		45714D8C1F54B3550008B169 /* ScrabbleDictionary.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ScrabbleDictionary.txt; sourceTree = "<group>"; };
@@ -85,6 +85,8 @@
 		45D9FB4F1F670E8D0099B257 /* tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tile@2x.png"; sourceTree = "<group>"; };
 		45D9FB511F671C810099B257 /* TileRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileRowView.swift; sourceTree = "<group>"; };
 		45E35EE71F684457008A3CE5 /* WordsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsView.swift; sourceTree = "<group>"; };
+		C028EEBC0C450CDF1DBEE222 /* Pods-Anagrams.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Anagrams.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Anagrams/Pods-Anagrams.debug.xcconfig"; sourceTree = "<group>"; };
+		E1F03ED10E99B05E3C6BBCDC /* Pods_Anagrams.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Anagrams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47425B2842AFEF6B8253126F /* Pods_Anagrams.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +115,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0EC769470E3215C102C4DB6E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C028EEBC0C450CDF1DBEE222 /* Pods-Anagrams.debug.xcconfig */,
+				4395E5B34D80D1B74295E77F /* Pods-Anagrams.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		4434051722F93139996ECC2F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E1F03ED10E99B05E3C6BBCDC /* Pods_Anagrams.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		45840AA81F509FA8008F6264 = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +139,8 @@
 				45840AC81F509FA9008F6264 /* AnagramsTests */,
 				45840AD31F509FA9008F6264 /* AnagramsUITests */,
 				45840AB21F509FA8008F6264 /* Products */,
+				0EC769470E3215C102C4DB6E /* Pods */,
+				4434051722F93139996ECC2F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -179,7 +201,6 @@
 		45D9FB461F670B7C0099B257 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4511E8DF1F6DA8AB00C9B97E /* Podfile */,
 				458437531F6C90670040E7D4 /* Sounds */,
 				45D9FB4C1F670E470099B257 /* Images */,
 				45840AB41F509FA8008F6264 /* AppDelegate.swift */,
@@ -204,8 +225,8 @@
 		45D9FB481F670BE30099B257 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				45840AB61F509FA8008F6264 /* OpeningViewController.swift */,
 				45840AE21F50A8F5008F6264 /* GameViewController.swift */,
+				45840AB61F509FA8008F6264 /* OpeningViewController.swift */,
 				458525161F55F33800886EE5 /* DifficultyViewController.swift */,
 				458437561F6C91680040E7D4 /* AudioController.swift */,
 			);
@@ -237,9 +258,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45840AD91F509FA9008F6264 /* Build configuration list for PBXNativeTarget "Anagrams" */;
 			buildPhases = (
+				B42B9E7E0F0D695A3E9E21B5 /* [CP] Check Pods Manifest.lock */,
 				45840AAD1F509FA8008F6264 /* Sources */,
 				45840AAE1F509FA8008F6264 /* Frameworks */,
 				45840AAF1F509FA8008F6264 /* Resources */,
+				8918380A63D52F6484FE9204 /* [CP] Embed Pods Frameworks */,
+				17C0EF916F4B457FEE1A8A2A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -347,7 +371,6 @@
 				45D9FB501F670E8D0099B257 /* tile@2x.png in Resources */,
 				4511E8D81F6D895300C9B97E /* swoosh.wav in Resources */,
 				45840ABF1F509FA9008F6264 /* LaunchScreen.storyboard in Resources */,
-				4511E8E01F6DA8AB00C9B97E /* Podfile in Resources */,
 				4511E8DA1F6D895300C9B97E /* failure-light.wav in Resources */,
 				45840ABC1F509FA9008F6264 /* Assets.xcassets in Resources */,
 				45840ABA1F509FA9008F6264 /* Main.storyboard in Resources */,
@@ -369,6 +392,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		17C0EF916F4B457FEE1A8A2A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Anagrams/Pods-Anagrams-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8918380A63D52F6484FE9204 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Anagrams/Pods-Anagrams-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B42B9E7E0F0D695A3E9E21B5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		45840AAD1F509FA8008F6264 /* Sources */ = {
@@ -539,6 +610,7 @@
 		};
 		45840ADA1F509FA9008F6264 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C028EEBC0C450CDF1DBEE222 /* Pods-Anagrams.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TG98T9AZTJ;
@@ -552,6 +624,7 @@
 		};
 		45840ADB1F509FA9008F6264 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4395E5B34D80D1B74295E77F /* Pods-Anagrams.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TG98T9AZTJ;
