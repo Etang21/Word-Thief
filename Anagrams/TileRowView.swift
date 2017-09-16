@@ -19,12 +19,16 @@ class TileRowView: UIView {
     var tapDelegate:TileRowViewDelegate?
     
     func addTile(tile: TileView) {
+        if tiles.contains(tile) {
+            removeTile(tile: tile)
+        }
         tiles.append(tile)
         resizeTiles()
         addSubview(tile)
     }
     
     func removeTile(tile: TileView, removeFromSuperview: Bool = false, resizes: Bool = true) {
+        guard tiles.contains(tile) else { return }
         tiles = tiles.filter({ !($0.isEqual(tile)) })
         if removeFromSuperview { tile.removeFromSuperview() }
         resizeTiles()

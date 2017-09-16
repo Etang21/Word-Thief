@@ -10,34 +10,34 @@
 
 import UIKit
 
-class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegate, TileRowViewDelegate {
+class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegate, GameModelDelegate {
     
     //MARK: Outlets
     @IBOutlet weak var boardTilesView: TileRowView!
     @IBOutlet weak var playerWordsView: WordsView!
-    @IBOutlet weak var oppWordsLabel: UILabel!
+    @IBOutlet weak var oppWordsView: WordsView!
     @IBOutlet weak var playerScoreLabel: UILabel!
     @IBOutlet weak var oppScoreLabel: UILabel!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var nextLetterButton: UIButton!
     @IBOutlet weak var entryView: TileRowView!
     @IBOutlet weak var entryFieldY: NSLayoutConstraint!
-    var inEntryMode: Bool = false
-    var rootTRView: TileRowView?
-    
     
     //MARK: Model
-    var lettersOnBoard = [Character]()
-    var playerWords = [String]()
-    var oppWords = [String]()
-    var playerScore = 0
-    var oppScore = 0
-    var compOpp: ComputerOpponent? = nil //nil if no opponent
+    var gameState = GameModel()
+    var compOpp: ComputerOpponent? //nil if no opponent
+    
+    //MARK: Other UI Properties
     var hasTimer: Bool = true
     var nextLetterTime: Float = 10.0 //Next letter flipped every nextLetterTime seconds
     private var timer: Timer!
     private var timerProgress: Int = 0 //Stores timer progress, goes to GameSettings.timerDivision-1
-
+    private var audioPlayer = AudioController()
+    
+    //MARK: Entry Mode Variables
+    var inEntryMode: Bool = false
+    var rootTRView: TileRowView?
+    var originalRootTiles: [TileView]?
     
     //MARK: Setup Methods
     override func viewDidLoad() {
@@ -46,8 +46,8 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
         configureEntryView()
         configureTimer()
         configureStartingWords()
-        updateUI()
-        testPlayerWordsView()
+        configureAudioPlayer()
+        gameState.delegate = self
     }
     
     func configureBoardTilesView() {
@@ -70,10 +70,27 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
     }
     
     func configureStartingWords() {
-        //oppWords = ["JOKE", "YOUR", "NEAT", "GRAPE", "COUNTRYSIDE"]
-        updateModelScore()
+        gameState.oppWords = ["FALL", "HOME"]
+        let _ = gameState.oppWords.map({ addStartingWordToOppUI(str: $0) })
         if(compOpp != nil) { updateCompOpp() }
+        updateScoreLabels()
     }
+    
+    func configureAudioPlayer() {
+        audioPlayer.preloadAudioEffects()
+        //Play some welcome noise or something maybe
+    }
+    
+    ///Only used for adding the starting words of the game to oppPlayer
+    private func addStartingWordToOppUI(str: String) {
+        let tiles = str.characters.map({ TileView(letter: $0, sideLength: 0) })
+        let _ = tiles.map({ $0.touchDelegate = self })
+        let trView = oppWordsView.addWordForTiles(tiles: tiles)
+        trView.tapDelegate = self
+        updateScoreLabels()
+    }
+    
+    //MARK: Testing Methods
     
     func testPlayerWordsView() {
         let testStr = "KITTEN"
@@ -103,21 +120,28 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
         trView.tapDelegate = self
     }
     
+    private var testModelCounter: Int = 0 //Just used for testing
+    func testModel() {
+        switch testModelCounter {
+        case 0: gameState.oppWords.append("HELLO")
+        case 1: gameState.lettersOnBoard.append("R")
+        case 2: gameState.lettersOnBoard.append("D")
+        case 3: gameState.playerWords.append("ELMO")
+        case 4: gameState.lettersOnBoard.append("E")
+        case 5: print(gameState.submitSteal("HOLLERED", isPlayerSteal: true))
+        case 6: print(gameState.submitSteal("SDFVSDF", isPlayerSteal: true))
+        case 7: gameState.lettersOnBoard.append("J")
+        case 8: print(gameState.submitSteal("MOLES", isPlayerSteal: false))
+        default: break
+        }
+        testModelCounter += 1
+        print(gameState.description)
+    }
+    
     //MARK: UI Methods
-    func updateUI() {
-        updateBoardTiles()
-        updatePlayerWordLabels()
-        updateScoreLabels()
-    }
-    
-    func updatePlayerWordLabels() {
-        oppWordsLabel?.text = oppWords.reduce("", { $0 + "\($1)\n" })
-    }
-    
     func updateScoreLabels() {
-        playerScoreLabel.text = "\(playerScore)"
-        oppScoreLabel.text = "\(oppScore)"
-        playerScoreLabel.bringSubview(toFront: view)
+        playerScoreLabel.text = "\(gameState.playerScore)"
+        oppScoreLabel.text = "\(gameState.oppScore)"
     }
     
     func incrementTime(timer: Timer) {
@@ -133,30 +157,16 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
     }
     
     @IBAction func addLetter(_ sender: Any) {
-        
-        testBoardTilesView()
-        //testPlayerWordsView() //TODO: Remove this code, it just adds kittens
-        
         let nextLetter = getRandomLetter()
-        lettersOnBoard.append(nextLetter)
+        gameState.lettersOnBoard.append(nextLetter) //TODO: Add this back in later!
         addBoardTileFor(char: nextLetter)
         
         if(compOpp != nil) {
             updateCompOpp()
             letCompOppSteal()
         }
-    }
-    
-    //TODO: Eventually you will wipe out this method!
-    func updateBoardTiles() {
-        for tile in boardTilesView.tiles {
-            tile.removeFromSuperview()
-        }
-        boardTilesView.tiles = []
-        for char in lettersOnBoard {
-            addBoardTileFor(char: char)
-        }
-        boardTilesView.resizeTiles()
+        
+        print(gameState.description)
     }
     
     func addBoardTileFor(char: Character) {
@@ -176,166 +186,165 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
         return "?" //If something bad happened . . .
     }
     
-    private func removeTileRowView(trView: TileRowView, playerID: playerID) {
-        if(playerID == .player) {
-            guard let index = playerWordsView.words.index(of: trView) else { return }
-            playerWordsView.words.remove(at: index)
-            trView.removeFromSuperview()
-            playerWordsView.resizeWords()
-        }
-        else if(playerID == .opp) {
-            //TODO: Remove from opp words
-        }
-    }
-    
-    private func addTileRowView(trView: TileRowView, playerID: playerID) {
-        if(playerID == .player) {
-            playerWordsView.addSubview(trView)
-            playerWordsView.words.append(trView)
-            playerWordsView.resizeWords()
-        }
-        else if(playerID == .opp) {
-            //TODO: add to opp words
-        }
-    }
-    
     func tileRowViewWasTapped(trView: TileRowView) {
         if !inEntryMode {
-            switchToEntryMode(trView: trView)
+            startEntryMode(trView: trView)
         }
         if inEntryMode && !trView.isEqual(rootTRView) && !trView.isEqual(boardTilesView) {
-            switchOutOfEntryMode(trView: trView)
+            endEntryMode(wasSteal: false)
         }
     }
     
-    private func switchToEntryMode(trView: TileRowView) {
+    private func startEntryMode(trView: TileRowView) {
         inEntryMode = true
         rootTRView = trView
-        for subview in view.subviews + playerWordsView.subviews + [view] {
+        originalRootTiles = trView.tiles
+        for subview in view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view] {
             subview.backgroundColor = UIColor.lightGray
         }
         trView.backgroundColor = UIColor.green
         boardTilesView.backgroundColor = UIColor.green
         entryView.backgroundColor = UIColor.green
+        playerScoreLabel.backgroundColor = UIColor.clear
+        oppScoreLabel.backgroundColor = UIColor.clear
     }
     
-    private func switchOutOfEntryMode(trView: TileRowView) {
+    private func endEntryMode(wasSteal: Bool) {
+        if !wasSteal { resetEntryTiles() }
         inEntryMode = false
+        originalRootTiles = nil
         rootTRView = nil
-        for subview in view.subviews + playerWordsView.subviews + [view] {
+        for subview in view.subviews + playerWordsView.subviews + oppWordsView.subviews + [view] {
             subview.backgroundColor = UIColor.white
         }
         entryView.backgroundColor = UIColor.gray
     }
     
+    private func resetEntryTiles() {
+        guard let originals = originalRootTiles else { return }
+        guard let rootView = rootTRView else { return }
+        for tile in originals {
+            entryView.removeTile(tile: tile)
+            rootView.addTile(tile: tile)
+        }
+        for tile in entryView.tiles {
+            entryView.removeTile(tile: tile)
+            boardTilesView.addTile(tile: tile)
+        }
+    }
+    
     func tileViewWasTapped(tileView: TileView) {
-        print("Recorded tap, in tileViewWasTapped")
         guard inEntryMode else { return }
-        print("In tileViewWasTapped, not in entry mode")
         if let root = rootTRView, root.tiles.contains(tileView) {
-            print("Tile detected in the root")
             root.removeTile(tile: tileView)
-            entryView.addTile(tile: tileView)
         }
         else if boardTilesView.tiles.contains(tileView) {
-            print("Tile detected in boardtiles")
             boardTilesView.removeTile(tile: tileView)
-            entryView.addTile(tile: tileView)
         }
-        //If not in entry mode, ignore. Entry mode triggered by tapping rows, not tiles
-    }
-    
-    //MARK: Stealing Words
-    
-    //Submits a steal, and updates model, UI, and compOpp
-    public func submitSteal(_ str: String?, isPlayerSteal: Bool) {
-        guard let str = str else { return }
-        let isSteal = checkSteal(str, isPlayerSteal: isPlayerSteal)
-        if(isSteal) {
-            if(compOpp != nil) { updateCompOpp() }
-            if(isPlayerSteal) {
-                //Yay! Fancy bells and whistles you stole it
-            }
-            else {
-                //Oh no the computer stole it :( sad sound effects
-            }
-        }
-        else if(isPlayerSteal) {
-            //Player just tried and failed to steal. Do something sad.
-        }
-        updateUI()
-    }
-    
-    ///Updates computer opponent with new data
-    func updateCompOpp() {
-        guard compOpp != nil else { return }
-        compOpp!.boardLetters = lettersOnBoard
-        compOpp!.boardWords = oppWords + playerWords
-    }
-    
-    ///Checks if valid steal, updates model accordingly.
-    private func checkSteal(_ str: String, isPlayerSteal: Bool) -> Bool {
-        guard str.characters.count >= GameSettings.minWordLength else {return false}
-        guard isRealWord(str.lowercased()) else { return false }
+        else { return }
         
-        for boardWord in oppWords + playerWords + [""] {
-            if let newBoardChars = isStealOfWord(root: boardWord, steal: str) {
-                updateWordArrays(root: boardWord, steal: str, isPlayerSteal: isPlayerSteal)
-                lettersOnBoard = newBoardChars
-                updateModelScore()
-                return true
+        entryView.addTile(tile: tileView)
+        audioPlayer.playEffect(name: SoundTap)
+    }
+    
+    //MARK: Steals
+    
+    @IBAction func submitEntrySteal(_ sender: Any) {
+        guard inEntryMode else { return }
+        guard let rootView = rootTRView else { endEntryMode(wasSteal: false); return }
+        guard (rootView.isEqual(boardTilesView) || rootView.tiles.isEmpty) else { endEntryMode(wasSteal: false); return }
+        print("Entry steal submitted from button.")
+        
+        let stealString = String(entryView.tiles.map({ $0.letter }))
+        let isSteal = gameState.submitSteal(stealString, isPlayerSteal: true) //Updates the entire model, will delegate to UI if successful steal
+        if !isSteal {
+            print("That was not a steal")
+            endEntryMode(wasSteal: false)
+            //You didn't steal it . . . have a sad noise.
+        }
+        print(gameState.description)
+    }
+    
+    ///The model calls this method when a steal goes through
+    func didSteal(steal: String, root: String, playerID: PlayerID) {
+        updateCompOpp()
+        switch playerID {
+            case .player: updateUIForPlayerSteal()
+            case .opp: updateUIForOppSteal(steal: steal, root: root)
+        }
+        updateScoreLabels()
+    }
+    
+    ///Called when the opponent steals something.
+    private func updateUIForOppSteal(steal: String, root: String) {
+        //Terminate player's steal, if in entry mode:
+        if inEntryMode { endEntryMode(wasSteal: false) }
+        
+        //Loop through to find the root word:
+        var rootView: TileRowView! = boardTilesView
+        for trView in playerWordsView.words + oppWordsView.words {
+            if String(trView.tiles.map({ $0.letter })) == root {
+                rootView = trView
             }
         }
-        return false
-    }
-    
-    ///Updates the model's word arrays for a given steal
-    private func updateWordArrays(root: String, steal: String, isPlayerSteal: Bool) {
-        if let pRootIndex = playerWords.index(of: root) {
-            playerWords.remove(at: pRootIndex)
-        }
-        else if let oppRootIndex = oppWords.index(of: root) {
-            oppWords.remove(at: oppRootIndex)
-        }
-        isPlayerSteal ? playerWords.append(steal) : oppWords.append(steal)
-    }
-    
-    //Returns nil if not a steal, and remaining board letters if it is
-    func isStealOfWord(root: String, steal: String) -> [Character]? {
-        guard steal.characters.count >= GameSettings.minWordLength else { return nil }
-        guard isRealWord(steal.lowercased()) else { return nil }
         
-        let rootChars = root.characters
-        var stealChars = steal.characters
-        var boardChars = lettersOnBoard
+        //Now gather up all our tiles from the views (kinda dumb, I know. Better to store the trViews somewhere.)
+        var stealTiles = [TileView]()
+        let stealChars = Array(steal.characters)
+        var tilesToTake = boardTilesView.tiles + rootView.tiles
         
-        for rootChar in rootChars {
-            guard let stlIndex = stealChars.index(of: rootChar) else { return nil }
-            stealChars.remove(at: stlIndex)
+        for char in stealChars {
+            charSearch: for (i, tile) in tilesToTake.enumerated().reversed() {
+                if tile.letter == char {
+                    stealTiles.append(tile)
+                    tilesToTake.remove(at: i)
+                    rootView.removeTile(tile: tile)
+                    boardTilesView.removeTile(tile: tile)
+                    break charSearch
+                }
+            }
         }
-        if stealChars.count == 0 { return nil }
-        for stlChar in stealChars {
-            guard let boardIndex = boardChars.index(of: stlChar) else { return nil }
-            boardChars.remove(at: boardIndex)
-        }
-        return boardChars
+        updateTilesAndRootViewForSteal(tiles: stealTiles, rootView: rootView, playerID: .opp)
     }
     
-    ///Returns true if input is a real English word
-    func isRealWord(_ str: String) -> Bool {
-        let checker = UITextChecker()
-        let range = NSMakeRange(0, str.characters.count)
-        let misspelled = checker.rangeOfMisspelledWord(in: str, range: range, startingAt: 0, wrap: false, language: "en")
-        return misspelled.location == NSNotFound
+    ///Called when a word is successfully stolen by player. Assumes it is from entry screen.
+    private func updateUIForPlayerSteal() {
+        guard let rootView = rootTRView else { endEntryMode(wasSteal: false); return }
+        let stolenTiles = entryView.tiles
+        let _ = stolenTiles.map({ entryView.removeTile(tile: $0) })
+        audioPlayer.playEffect(name: SoundPlayerSteal)
+        updateTilesAndRootViewForSteal(tiles: stolenTiles, rootView: rootView, playerID: .player)
+        endEntryMode(wasSteal: true)
     }
     
-    //Updates score in model, using scoreDict's score code
-    func updateModelScore() {
-        oppScore = oppWords.reduce(0, {$0 + (GameSettings.chillScoreDict[$1.characters.count] ?? 12)})
-        playerScore = playerWords.reduce(0, {$0 + (GameSettings.chillScoreDict[$1.characters.count] ?? 12)})
+    private func updateTilesAndRootViewForSteal(tiles: [TileView], rootView: TileRowView, playerID: PlayerID) {
+        var addToView = playerWordsView
+        switch playerID {
+            case .player: addToView = playerWordsView
+            case .opp: addToView = oppWordsView
+        }
+        
+        let newTRView = addToView?.addWordForTiles(tiles: tiles)
+        newTRView?.tapDelegate = self
+        
+        if oppWordsView.words.contains(rootView) {
+            oppWordsView.remove(trView: rootView)
+        }
+        else if playerWordsView.words.contains(rootView) {
+            playerWordsView.remove(trView: rootView)
+        }
+        
+        playerWordsView.resizeWords()
+        oppWordsView.resizeWords()
     }
     
     //MARK: Computer Opponent Methods
+    func updateCompOpp() {
+        guard compOpp != nil else { return }
+        compOpp!.boardLetters = gameState.lettersOnBoard
+        compOpp!.boardWords = gameState.oppWords + gameState.playerWords
+    }
+    
     func printAllSteals() {
         DispatchQueue.global(qos: .utility).async {
             print(self.compOpp?.getAllSteals() ?? "CompOpp is nil")
@@ -345,9 +354,8 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
     func letCompOppSteal() {
         DispatchQueue.global(qos: .utility).async {
             guard let compSteal = self.compOpp?.getFirstSteal() else { return }
-            //TODO: Add the time delay back in!
             DispatchQueue.main.asyncAfter(deadline: .now() + (self.compOpp?.stealDelay ?? 0), execute: {
-                self.submitSteal(compSteal, isPlayerSteal: false)
+                self.gameState.submitSteal(compSteal, isPlayerSteal: false)
             })
         }
     }
@@ -358,21 +366,11 @@ class GameViewController: UIViewController, UITextFieldDelegate, TileViewDelegat
     }
     
     private struct GameSettings {
-        static let minWordLength = 4
-        static let properScoreDict = [ 1:1, 2:1, 3:1, 4:1, 5:2, 6:3, 7:4, 8:5, 9:6, 10:7, 11:8, 12:9, 13:10, 14:11, 15:12] //wordLength:score
-        static let chillScoreDict = [1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10, 11:11, 12:12, 13:13, 14:14, 15:15]
         static let timerDivision: Int = 200 //What fraction of the nextLetterTime the timer updates. Higher -> smoother timer performance.
     }
 }
 
-///A tile or char can either be on the board leters, the entry bar, or the root word getting stolen.
-enum LetterPosition {
-    case board
-    case entry
-    case root
-}
-
-enum playerID {
+enum PlayerID {
     case player
     case opp
 }

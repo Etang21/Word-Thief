@@ -13,6 +13,7 @@ class WordsView: UIView {
     var words = [TileRowView]()
     
     func addWordForTiles(tiles: [TileView]) -> TileRowView {
+        //FIXME: This method isn't correctly resizing everything! Some views end up still compressed.
         let trView = TileRowView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 0, height: 0)))
         words.append(trView)
         resizeWords()
@@ -25,6 +26,7 @@ class WordsView: UIView {
     
     ///Removes view and all subviews. This assumes you have already moved the tiles elsewhere.
     func remove(trView: TileRowView) {
+        guard words.contains(trView) else { return }
         words = words.filter({ !$0.isEqual(trView) })
         trView.tiles = []
         trView.removeFromSuperview()

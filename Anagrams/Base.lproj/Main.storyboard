@@ -175,18 +175,6 @@
                                     <action selector="addLetter:" destination="wgf-8M-jWr" eventType="touchUpInside" id="Aas-Qc-adg"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Their Words" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="D0P-MC-YW5">
-                                <rect key="frame" x="123" y="357" width="129.5" height="302"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="oppScore" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NPx-Tm-bfa">
-                                <rect key="frame" x="16" y="357.5" width="103" height="29"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="4VE-ld-zdk">
                                 <rect key="frame" x="16" y="147.5" width="298" height="2"/>
                             </progressView>
@@ -195,19 +183,41 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XfH-VE-IK6" customClass="WordsView" customModule="Anagrams" customModuleProvider="target">
-                                <rect key="frame" x="16" y="158" width="343" height="150"/>
+                                <rect key="frame" x="16" y="158" width="343" height="141"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CDZ-KQ-gc2" customClass="WordsView" customModule="Anagrams" customModuleProvider="target">
+                                <rect key="frame" x="16" y="368" width="343" height="291"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="playerScore" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rHP-hj-EKw">
                                 <rect key="frame" x="16" y="158" width="127" height="29"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <color key="textColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="oppScore" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NPx-Tm-bfa">
+                                <rect key="frame" x="16" y="368" width="103" height="29"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Yd-6H-l77" customClass="TileRowView" customModule="Anagrams" customModuleProvider="target">
-                                <rect key="frame" x="16" y="316.5" width="343" height="33"/>
+                                <rect key="frame" x="16" y="307" width="295" height="53"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEX-HW-BsJ">
+                                <rect key="frame" x="319" y="306.5" width="32" height="53"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="AEX-HW-BsJ" secondAttribute="height" multiplier="0.6" id="3hM-N2-wKx"/>
+                                </constraints>
+                                <state key="normal" title="➡️"/>
+                                <connections>
+                                    <action selector="submitEntrySteal:" destination="wgf-8M-jWr" eventType="touchUpInside" id="xzk-PZ-2bQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -217,23 +227,27 @@
                             <constraint firstItem="4Yd-6H-l77" firstAttribute="top" secondItem="XfH-VE-IK6" secondAttribute="bottom" constant="8" symbolic="YES" id="23x-k9-ZxE"/>
                             <constraint firstItem="ZtR-7R-VVn" firstAttribute="top" secondItem="gj7-M8-UQ1" secondAttribute="bottom" constant="8" id="2fT-BN-suL"/>
                             <constraint firstItem="XfH-VE-IK6" firstAttribute="top" secondItem="4VE-ld-zdk" secondAttribute="bottom" constant="8" symbolic="YES" id="5lK-4z-Q0L"/>
+                            <constraint firstItem="AEX-HW-BsJ" firstAttribute="leading" secondItem="4Yd-6H-l77" secondAttribute="trailing" constant="8" symbolic="YES" id="6WM-gQ-BfB"/>
                             <constraint firstAttribute="leadingMargin" secondItem="4VE-ld-zdk" secondAttribute="leading" id="Csc-tS-Dz0"/>
                             <constraint firstItem="rHP-hj-EKw" firstAttribute="top" secondItem="4VE-ld-zdk" secondAttribute="bottom" constant="9" id="F4o-mJ-ayJ"/>
                             <constraint firstAttribute="leadingMargin" secondItem="XfH-VE-IK6" secondAttribute="leading" id="G54-rh-aZC"/>
                             <constraint firstAttribute="trailingMargin" secondItem="XfH-VE-IK6" secondAttribute="trailing" id="IVN-on-d5k"/>
                             <constraint firstAttribute="leadingMargin" secondItem="rHP-hj-EKw" secondAttribute="leading" id="JC1-ex-xup"/>
                             <constraint firstAttribute="trailingMargin" secondItem="C8W-GC-nkh" secondAttribute="trailing" id="NGt-Au-0g3"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="4Yd-6H-l77" secondAttribute="trailing" id="O7d-DS-iHC"/>
-                            <constraint firstItem="Ta1-od-clm" firstAttribute="top" secondItem="D0P-MC-YW5" secondAttribute="bottom" constant="8" symbolic="YES" id="QL7-Cr-box"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZtR-7R-VVn" secondAttribute="trailing" id="RY3-cB-bw8"/>
-                            <constraint firstItem="D0P-MC-YW5" firstAttribute="top" secondItem="4Yd-6H-l77" secondAttribute="bottom" constant="8" symbolic="YES" id="agP-mU-eSO"/>
+                            <constraint firstItem="AEX-HW-BsJ" firstAttribute="height" secondItem="4Yd-6H-l77" secondAttribute="height" id="WmM-xF-5qc"/>
+                            <constraint firstItem="Ta1-od-clm" firstAttribute="top" secondItem="CDZ-KQ-gc2" secondAttribute="bottom" constant="8" symbolic="YES" id="bie-yv-MCH"/>
                             <constraint firstAttribute="leadingMargin" secondItem="4Yd-6H-l77" secondAttribute="leading" id="dUV-Sf-gCp"/>
                             <constraint firstItem="4Yd-6H-l77" firstAttribute="centerY" secondItem="cXu-HK-478" secondAttribute="centerY" id="eHD-wt-TIG"/>
-                            <constraint firstItem="4Yd-6H-l77" firstAttribute="height" secondItem="cXu-HK-478" secondAttribute="height" multiplier="0.05" id="g79-0i-yRC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="AEX-HW-BsJ" secondAttribute="trailing" constant="8" id="eK9-is-FQu"/>
+                            <constraint firstItem="4Yd-6H-l77" firstAttribute="height" secondItem="cXu-HK-478" secondAttribute="height" multiplier="0.08" id="g79-0i-yRC"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="CDZ-KQ-gc2" secondAttribute="leading" id="jh0-IZ-y6R"/>
+                            <constraint firstItem="CDZ-KQ-gc2" firstAttribute="top" secondItem="4Yd-6H-l77" secondAttribute="bottom" constant="8" symbolic="YES" id="m69-pr-G8h"/>
                             <constraint firstItem="C8W-GC-nkh" firstAttribute="leading" secondItem="4VE-ld-zdk" secondAttribute="trailing" constant="8" id="mxy-Fg-nDE"/>
+                            <constraint firstItem="AEX-HW-BsJ" firstAttribute="centerY" secondItem="4Yd-6H-l77" secondAttribute="centerY" id="vFB-oT-E9G"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="CDZ-KQ-gc2" secondAttribute="trailing" id="wK2-ed-dcN"/>
                             <constraint firstItem="ZtR-7R-VVn" firstAttribute="height" secondItem="cXu-HK-478" secondAttribute="height" multiplier="0.08" id="woD-gy-Tzv"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ZtR-7R-VVn" secondAttribute="leading" id="x4o-0k-wGE"/>
-                            <constraint firstItem="D0P-MC-YW5" firstAttribute="centerX" secondItem="cXu-HK-478" secondAttribute="centerX" id="xJe-zB-9OA"/>
                             <constraint firstItem="C8W-GC-nkh" firstAttribute="top" secondItem="ZtR-7R-VVn" secondAttribute="bottom" constant="8" id="xbE-k9-ibm"/>
                         </constraints>
                     </view>
@@ -243,7 +257,7 @@
                         <outlet property="entryView" destination="4Yd-6H-l77" id="wU6-p5-yjv"/>
                         <outlet property="nextLetterButton" destination="C8W-GC-nkh" id="Swe-Oy-xwc"/>
                         <outlet property="oppScoreLabel" destination="NPx-Tm-bfa" id="KZg-YS-5bR"/>
-                        <outlet property="oppWordsLabel" destination="D0P-MC-YW5" id="jre-DF-svz"/>
+                        <outlet property="oppWordsView" destination="CDZ-KQ-gc2" id="04W-Cy-ZiJ"/>
                         <outlet property="playerScoreLabel" destination="rHP-hj-EKw" id="th4-5d-Gx3"/>
                         <outlet property="playerWordsView" destination="XfH-VE-IK6" id="Ry3-dx-uCF"/>
                         <outlet property="progressView" destination="4VE-ld-zdk" id="BxN-1H-6lR"/>
