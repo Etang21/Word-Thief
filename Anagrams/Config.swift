@@ -22,6 +22,7 @@ let AudioEffectFiles = [SoundTap, SoundPlayerSteal, SoundAddLetter, SoundOppStea
 let DefaultBackgroundColor = FlatRed()
 let ColorArray = ColorSchemeOf(ColorScheme.analogous, color: DefaultBackgroundColor, isFlatScheme: true)
 
-let EntryViewsColor = ColorArray[0] 
+let EntryViewsColor = ColorArray[1]
 let EntryBackgroundColor = ColorArray[2]
-let DefaultEntryViewColor = ColorArray[4]
+let DefaultEntryViewColor = ColorArray[0]
+let MenuBackgroundColor = ColorArray[4]

@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Instructions.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-Anagrams.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -17,7 +22,12 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>588439B9EC930ED01F4833A4EBFC1AFA</key>
+		<key>202B028D82A8AFFA1F0F024B016A3986</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6FFF9A0488BA9FA46CAC0F6F1BA0A397</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -13,7 +13,7 @@ class OpeningViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = GradientColor(.diagonal, frame: view.frame, colors: [DefaultBackgroundColor, FlatWhite()])
+        view.backgroundColor = GradientColor(.diagonal, frame: view.frame, colors: [DefaultBackgroundColor, MenuBackgroundColor])
         //self.setStatusBarStyle(UIStatusBarStyleContrast)
     }
 
@@ -31,6 +31,10 @@ class OpeningViewController: UIViewController {
             guard let destGame = segue.destination as? GameViewController else { return }
             destGame.compOpp = ComputerOpponent(stealDelayInSeconds: 10)
         }
+    }
+    
+    @IBAction func unwindToOpening(segue: UIStoryboardSegue) {
+        
     }
     
     struct SegueIdentifiers {

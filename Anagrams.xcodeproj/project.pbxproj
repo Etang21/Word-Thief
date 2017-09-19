@@ -27,11 +27,13 @@
 		458437571F6C91680040E7D4 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458437561F6C91680040E7D4 /* AudioController.swift */; };
 		458437591F6C9DCC0040E7D4 /* win.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 458437581F6C9DCC0040E7D4 /* win.mp3 */; };
 		458525171F55F33800886EE5 /* DifficultyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458525161F55F33800886EE5 /* DifficultyViewController.swift */; };
+		45C7DB9B1F70349D00165BBC /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C7DB9A1F70349D00165BBC /* TutorialViewController.swift */; };
 		45D9FB4B1F670CB30099B257 /* TileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FB4A1F670CB30099B257 /* TileView.swift */; };
 		45D9FB4E1F670E6B0099B257 /* tile.png in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FB4D1F670E6B0099B257 /* tile.png */; };
 		45D9FB501F670E8D0099B257 /* tile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FB4F1F670E8D0099B257 /* tile@2x.png */; };
 		45D9FB521F671C810099B257 /* TileRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FB511F671C810099B257 /* TileRowView.swift */; };
 		45E35EE81F684457008A3CE5 /* WordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E35EE71F684457008A3CE5 /* WordsView.swift */; };
+		45F161A61F6EEB8F008CFC31 /* GameOverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F161A51F6EEB8F008CFC31 /* GameOverViewController.swift */; };
 		47425B2842AFEF6B8253126F /* Pods_Anagrams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1F03ED10E99B05E3C6BBCDC /* Pods_Anagrams.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,11 +82,13 @@
 		458437561F6C91680040E7D4 /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		458437581F6C9DCC0040E7D4 /* win.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = win.mp3; sourceTree = "<group>"; };
 		458525161F55F33800886EE5 /* DifficultyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DifficultyViewController.swift; sourceTree = "<group>"; };
+		45C7DB9A1F70349D00165BBC /* TutorialViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
 		45D9FB4A1F670CB30099B257 /* TileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileView.swift; sourceTree = "<group>"; };
 		45D9FB4D1F670E6B0099B257 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tile.png; sourceTree = "<group>"; };
 		45D9FB4F1F670E8D0099B257 /* tile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tile@2x.png"; sourceTree = "<group>"; };
 		45D9FB511F671C810099B257 /* TileRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileRowView.swift; sourceTree = "<group>"; };
 		45E35EE71F684457008A3CE5 /* WordsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsView.swift; sourceTree = "<group>"; };
+		45F161A51F6EEB8F008CFC31 /* GameOverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverViewController.swift; sourceTree = "<group>"; };
 		C028EEBC0C450CDF1DBEE222 /* Pods-Anagrams.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Anagrams.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Anagrams/Pods-Anagrams.debug.xcconfig"; sourceTree = "<group>"; };
 		E1F03ED10E99B05E3C6BBCDC /* Pods_Anagrams.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Anagrams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -228,6 +232,8 @@
 				45840AE21F50A8F5008F6264 /* GameViewController.swift */,
 				45840AB61F509FA8008F6264 /* OpeningViewController.swift */,
 				458525161F55F33800886EE5 /* DifficultyViewController.swift */,
+				45F161A51F6EEB8F008CFC31 /* GameOverViewController.swift */,
+				45C7DB9A1F70349D00165BBC /* TutorialViewController.swift */,
 				458437561F6C91680040E7D4 /* AudioController.swift */,
 			);
 			name = Controllers;
@@ -452,8 +458,10 @@
 				456C43D01F6B02C900F7AF16 /* GameModel.swift in Sources */,
 				45840AE31F50A8F5008F6264 /* GameViewController.swift in Sources */,
 				45840AB51F509FA8008F6264 /* AppDelegate.swift in Sources */,
+				45C7DB9B1F70349D00165BBC /* TutorialViewController.swift in Sources */,
 				45E35EE81F684457008A3CE5 /* WordsView.swift in Sources */,
 				45D9FB521F671C810099B257 /* TileRowView.swift in Sources */,
+				45F161A61F6EEB8F008CFC31 /* GameOverViewController.swift in Sources */,
 				458437551F6C90EA0040E7D4 /* Config.swift in Sources */,
 				45D9FB4B1F670CB30099B257 /* TileView.swift in Sources */,
 				45714D8A1F54940C0008B169 /* ComputerOpponent.swift in Sources */,

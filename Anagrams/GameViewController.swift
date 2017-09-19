@@ -35,6 +35,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     private var timer: Timer!
     private var timerProgress: Int = 0 //Stores timer progress, goes to GameSettings.timerDivision-1
     private var audioPlayer = AudioController()
+    var isGameOver = false
     
     //MARK: Entry Mode Variables
     var inEntryMode: Bool = false
@@ -159,9 +160,11 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         oppScoreLabel.text = "\(gameState.oppScore)"
         playerScoreLabel.textColor = ContrastColorOf(DefaultBackgroundColor, returnFlat: true)
         oppScoreLabel.textColor = ContrastColorOf(DefaultBackgroundColor, returnFlat: true)
+        checkForGameOver()
     }
     
     func incrementTime(timer: Timer) {
+        guard isGameOver == false else { return }
         timerProgress = (timerProgress+1) % GameSettings.timerDivision
         let progViewVal = Float(timerProgress)/Float(GameSettings.timerDivision)
         if(timerProgress == 0) {
@@ -294,6 +297,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     
     ///The model calls this method when a steal goes through
     func didSteal(steal: String, root: String, playerID: PlayerID) {
+        guard !isGameOver else { return }
         updateCompOpp()
         switch playerID {
             case .player: updateUIForPlayerSteal()
@@ -370,6 +374,7 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     
     //MARK: Computer Opponent Methods
     func updateCompOpp() {
+        guard !isGameOver else { return }
         guard compOpp != nil else { return }
         compOpp!.boardLetters = gameState.lettersOnBoard
         compOpp!.boardWords = gameState.oppWords + gameState.playerWords
@@ -386,8 +391,30 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let compSteal = self?.compOpp?.getFirstSteal() else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + (self?.compOpp?.stealDelay ?? 0), execute: {
+                guard self?.isGameOver == false else { return }
                 self?.gameState.submitSteal(compSteal, isPlayerSteal: false)
             })
+        }
+    }
+    
+    //MARK: Game Over Segues:
+    ///Checks if game over, and segues to GameOverVC if so
+    func checkForGameOver() {
+        if max(gameState.playerScore, gameState.oppScore) >= GameSettings.winThreshold {
+            isGameOver = true
+            performSegue(withIdentifier: SegueIdentifiers.GameOver, sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == SegueIdentifiers.GameOver {
+            print("In prepare for segue")
+            guard let destvc = segue.destination as? GameOverViewController else { return }
+            destvc.gameState = gameState //FIXME: May need to end previous game to make sure it doesn't change
+            destvc.winner = PlayerID.player
+            if gameState.oppScore >= GameSettings.winThreshold {
+                destvc.winner = PlayerID.opp
+            }
         }
     }
 
@@ -398,6 +425,11 @@ class GameViewController: UIViewController, TileViewDelegate, TileRowViewDelegat
     
     private struct GameSettings {
         static let timerDivision: Int = 200 //What fraction of the nextLetterTime the timer updates. Higher -> smoother timer performance.
+        static let winThreshold: Int = 30
+    }
+    
+    private struct SegueIdentifiers {
+        static let GameOver = "GameOverSegue"
     }
 }
 

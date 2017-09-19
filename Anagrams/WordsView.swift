@@ -34,7 +34,6 @@ class WordsView: UIView {
     }
     
     func resizeWords() {
-        print("We are in resizeWords() and words is \(words)")
         let numWords = words.count
         let totalWordScale = CGFloat(numWords) + CGFloat(UIConstants.spaceWordRatio)*CGFloat(numWords-1)
         let wordHeight = bounds.height/totalWordScale
